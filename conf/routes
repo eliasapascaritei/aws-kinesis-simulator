@@ -8,7 +8,3 @@ GET     /                           controllers.FileController.index
 POST   /:eventType/average          controllers.FileController.uploadFile(eventType: String)
 
 GET    /assets/*file               controllers.Assets.versioned(path="/public", file: Asset)
-
-#GET     /swagger.json              controllers.FileController.getResources
-
-      

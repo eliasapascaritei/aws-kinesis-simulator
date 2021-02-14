@@ -22,12 +22,6 @@ class FileController @Inject()(implicit cc: ControllerComponents,
   import models.DtoEventKinesisAverage._
   private val minuteInterval = 1
 
-  /**
-   * Create an Action to render an HTML page with a welcome message.
-   * The configuration in the `routes` file means that this method
-   * will be called when the application receives a `GET` request with
-   * a path of `/`.
-   */
   def index = Action {
     Ok("Resident.")
   }
