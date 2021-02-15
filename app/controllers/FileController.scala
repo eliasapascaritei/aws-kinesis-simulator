@@ -9,7 +9,7 @@ import java.io.File
 import java.time.Instant
 import java.time.temporal.ChronoUnit
 import javax.inject._
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
 
 /**
  * This controller creates an `Action` to handle HTTP requests to the
@@ -17,12 +17,13 @@ import scala.concurrent.Future
  */
 @Singleton
 class FileController @Inject()(implicit cc: ControllerComponents,
+                               ec: ExecutionContext,
                                fileService: FileService) extends AbstractController(cc) {
 
   import models.DtoEventKinesisAverage._
-  private val minuteInterval = 1
+  private lazy val minuteInterval = 1
 
-  def index = Action {
+  def index: Action[AnyContent] = Action {
     Ok("Resident.")
   }
 
@@ -43,12 +44,13 @@ class FileController @Inject()(implicit cc: ControllerComponents,
               case Some(multiPartFormData) =>
                 val maybeSourceFile: Option[File] = multiPartFormData
                   .file("file")
-                  .map(temporaryFile => {
-                    temporaryFile.ref.path.toFile
-                  })
-                val summary = fileService.readKinesisEventsFromFile(maybeSourceFile.get, name, startDate, endDate)
+                  .map(_.ref.path.toFile)
 
-                Future.successful(Ok(Json.toJson(summary)))
+                fileService
+                  .readKinesisEventsFromFile(maybeSourceFile.get, name, startDate, endDate)
+                  .map(result => {
+                    Ok(Json.toJson(result))
+                  })
             }
         }
       }
@@ -62,7 +64,6 @@ class FileController @Inject()(implicit cc: ControllerComponents,
   private def wrapException(future: => Future[Result]): Future[Result] =
     try {
       future
-      //        .recover(BadRequest("Something went wrong"))
     } catch {
       case _: Throwable =>
         Future.successful(BadRequest("Something went wrong"))

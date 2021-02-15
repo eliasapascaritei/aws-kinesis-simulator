@@ -31,7 +31,16 @@ scalacOptions := Seq(
 libraryDependencies ++= Seq(ws, specs2 % Test , guice )
 
 libraryDependencies ++= Seq(
-  "org.mongodb.scala"   %% "mongo-scala-driver"     % "4.1.1",
-  "com.typesafe"         % "config"                 % "1.4.1",
-  "com.typesafe.play"   %% "play-json"              % "2.9.2"
+  "com.typesafe"                            % "config"                 % "1.4.1",
+  "com.typesafe.play"                      %% "play-json"              % "2.9.2"
+)
+
+val mongockVersion = "4.1.17"
+libraryDependencies ++= Seq(
+  "org.mongodb"                            %  "mongo-java-driver"       % "3.12.7",
+  "org.mongodb.scala"                      %% "mongo-scala-driver"     % "2.9.0",
+  "ch.rasc"                                 % "bsoncodec"              % "1.0.1",
+  "com.github.cloudyrock.mongock"           % "mongock-bom"            % mongockVersion,
+  "com.github.cloudyrock.mongock"           % "mongock-standalone"     % mongockVersion,
+  "com.github.cloudyrock.mongock"           % "mongodb-v3-driver"      % mongockVersion
 )
